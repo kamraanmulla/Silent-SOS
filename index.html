@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent SOS | Emergency Help System</title>
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Enhanced Color Palette */
+            --primary-blue: #1a237e;
+            --primary-blue-light: #283593;
+            --primary-blue-dark: #0d1b6e;
+            --accent-red: #d32f2f;
+            --accent-red-dark: #b71c1c;
+            --accent-red-light: #ff6659;
+            --success-green: #388e3c;
+            --success-green-light: #4caf50;
+            --warning-orange: #f57c00;
+            --text-dark: #212121;
+            --text-medium: #424242;
+            --text-light: #757575;
+            --background-white: #ffffff;
+            --background-light: #f0f4f8;
+            --background-gradient: linear-gradient(135deg, #e8eff7 0%, #f5f7fa 100%);
+            --border-light: #e0e0e0;
+            --border-medium: #bdbdbd;
+            --shadow-subtle: 0 2px 12px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.08);
+            --shadow-heavy: 0 12px 32px rgba(0, 0, 0, 0.1);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 50px;
+            
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background-gradient);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Screen Container */
+        .screen {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header - Enhanced */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 26px;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .logo-text h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            line-height: 1.2;
+        }
+
+        .logo-text p {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Language Selector */
+        .language-selector {
+            display: flex;
+            gap: 8px;
+            background: var(--background-white);
+            padding: 8px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .lang-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-medium);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: var(--background-light);
+        }
+
+        /* Main Content Grid */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 20px 0 40px;
+            align-items: start;
+        }
+
+        /* Left Column */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: var(--background-white);
+            padding: 32px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-light);
+        }
+
+        .title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .title span {
+            color: var(--accent-red);
+            position: relative;
+        }
+
+        .title span::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-red);
+            border-radius: 1.5px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--text-medium);
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .feature-item {
+            background: var(--background-light);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all var(--transition-normal);
+            border: 1px solid transparent;
+        }
+
+        .feature-item:hover {
+            background: var(--background-white);
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .feature-text h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .feature-text p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* Instructions Panel */
+        .instructions-panel {
+            background: var(--background-white);
+            padding: 32px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-light);
+        }
+
+        .instructions-panel h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+        }
+
+        .instructions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .instruction-step {
+            background: var(--background-light);
+            padding: 20px;
+            border-radius: var(--radius-md);
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-red);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .instruction-step h4 {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .instruction-step p {
+            font-size: 14px;
+            color: var(--text-medium);
+        }
+
+        /* Right Column */
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* SOS Container */
+        .sos-container {
+            background: var(--background-white);
+            padding: 40px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-heavy);
+            border: 2px solid rgba(211, 47, 47, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sos-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-red-dark));
+        }
+
+        .sos-button-wrapper {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .sos-button {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle at 35% 35%, var(--accent-red), var(--accent-red-dark));
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 56px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            box-shadow: 
+                0 0 0 0 rgba(211, 47, 47, 0.7),
+                0 20px 40px rgba(211, 47, 47, 0.25);
+            animation: pulse 2s infinite;
+            z-index: 2;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 
+                    0 0 0 0 rgba(211, 47, 47, 0.7),
+                    0 20px 40px rgba(211, 47, 47, 0.25);
+            }
+            50% {
+                box-shadow: 
+                    0 0 0 15px rgba(211, 47, 47, 0),
+                    0 30px 60px rgba(211, 47, 47, 0.3);
+            }
+        }
+
+        .sos-button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 30%, rgba(255,255,255,0.1) 70%);
+            border-radius: 50%;
+            animation: ripple 3s infinite;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .sos-button:active {
+            transform: scale(0.95);
+            animation: none;
+        }
+
+        .sos-instruction {
+            margin-top: 20px;
+            font-size: 16px;
+            color: var(--text-medium);
+            font-weight: 600;
+            background: var(--background-light);
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-light);
+        }
+
+        /* Emergency Options */
+        .emergency-options {
+            background: var(--background-white);
+            padding: 32px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-light);
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-red));
+            border-radius: 2px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .option-card {
+            background: var(--background-light);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--primary-blue);
+            transform: scaleX(0);
+            transition: transform var(--transition-normal);
+        }
+
+        .option-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-blue);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .option-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .option-icon {
+            font-size: 40px;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--background-white);
+            transition: all var(--transition-normal);
+            position: relative;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .option-card:hover .option-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .option-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            transition: color var(--transition-normal);
+        }
+
+        .option-card:hover .option-name {
+            color: var(--primary-blue);
+        }
+
+        /* GOOGLE MAPS SIMULATION */
+        .map-section {
+            grid-column: 1 / -1;
+            background: var(--background-white);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            margin-top: 20px;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #4285F4, #34A853, #FBBC05, #EA4335);
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .map-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            color: var(--text-dark);
+        }
+
+        .google-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8f9fa;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            border: 1px solid #dadce0;
+            font-weight: 600;
+            color: #5f6368;
+        }
+
+        .google-badge i {
+            color: #4285F4;
+            font-size: 20px;
+        }
+
+        /* Interactive Map Simulation */
+        .map-simulation {
+            height: 400px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .map-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(66, 133, 244, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(66, 133, 244, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .map-marker {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .user-marker {
+            background: var(--primary-blue);
+            border: 3px solid white;
+            width: 24px;
+            height: 24px;
+            animation: userPulse 2s infinite;
+        }
+
+        @keyframes userPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .hospital-marker { background: #d32f2f; }
+        .police-marker { background: #1976d2; }
+        .women-marker { background: #7b1fa2; }
+        .mental-marker { background: #388e3c; }
+        .disaster-marker { background: #f57c00; }
+        .general-marker { background: #0097a7; }
+
+        .map-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            color: var(--text-light);
+            font-size: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .demo-note {
+            background: #e8f0fe;
+            padding: 15px;
+            border-radius: var(--radius-md);
+            margin-top: 20px;
+            border-left: 4px solid #4285F4;
+            font-size: 14px;
+        }
+
+        /* Statistics Panel */
+        .stats-panel {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: var(--background-white);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-subtle);
+            text-align: center;
+            border: 1px solid var(--border-light);
+            transition: all var(--transition-normal);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .stat-number {
+            font-family: 'Poppins', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Footer */
+        .footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid var(--border-light);
+            color: var(--text-light);
+            font-size: 14px;
+            background: var(--background-white);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .tech-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: var(--background-light);
+            border-radius: var(--radius-full);
+        }
+
+        /* Countdown Screen */
+        .countdown-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            padding: 40px 20px;
+            text-align: center;
+            background: var(--background-white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-medium);
+            margin: 40px auto;
+            max-width: 800px;
+        }
+
+        .ai-processing {
+            max-width: 600px;
+            margin: 0 auto 50px;
+        }
+
+        .ai-text {
+            font-size: 28px;
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .ai-subtext {
+            font-size: 16px;
+            color: var(--text-medium);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .loading-animation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 12px;
+        }
+
+        .loading-dots span {
+            width: 20px;
+            height: 20px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .countdown-display {
+            font-size: 100px;
+            font-weight: 900;
+            color: var(--accent-red);
+            margin: 40px 0;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+        }
+
+        .countdown-circle {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border: 8px solid rgba(211, 47, 47, 0.1);
+            border-top-color: var(--accent-red);
+            border-radius: 50%;
+            animation: countdownSpin 3s linear infinite;
+        }
+
+        @keyframes countdownSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .cancel-btn {
+            padding: 18px 50px;
+            background: var(--background-white);
+            border: 3px solid var(--success-green);
+            border-radius: var(--radius-full);
+            color: var(--success-green);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 30px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .cancel-btn:hover {
+            background: var(--success-green);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Success Screen */
+        .success-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            padding: 40px 20px;
+            text-align: center;
+            background: var(--background-white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-medium);
+            margin: 40px auto;
+            max-width: 800px;
+        }
+
+        .success-icon {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, var(--success-green), var(--success-green-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 70px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-heavy);
+            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+        }
+
+        .success-icon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid rgba(56, 142, 60, 0.2);
+            border-radius: 50%;
+            animation: successRing 2s infinite;
+        }
+
+        @keyframes successRing {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .success-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--success-green);
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            font-size: 18px;
+            color: var(--text-dark);
+            margin-bottom: 40px;
+            max-width: 500px;
+            line-height: 1.8;
+        }
+
+        .org-info {
+            background: linear-gradient(135deg, rgba(56, 142, 60, 0.05), rgba(76, 175, 80, 0.05));
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            margin: 30px 0;
+            border-left: 5px solid var(--success-green);
+            width: 100%;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        .back-btn {
+            padding: 18px 50px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .back-btn:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .features-grid, .instructions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .title {
+                font-size: 32px;
+            }
+
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .sos-button {
+                width: 200px;
+                height: 200px;
+                font-size: 48px;
+            }
+
+            .stats-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .map-section {
+                padding: 25px;
+            }
+
+            .countdown-display {
+                font-size: 80px;
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .sos-button {
+                width: 180px;
+                height: 180px;
+                font-size: 42px;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .countdown-display {
+                font-size: 60px;
+                height: 100px;
+            }
+
+            .success-title {
+                font-size: 32px;
+            }
+
+            .lang-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            .feature-item, .instruction-step {
+                padding: 16px;
+            }
+        }
+
+        /* Accessibility */
+        button:focus,
+        .option-card:focus {
+            outline: 3px solid var(--primary-blue);
+            outline-offset: 3px;
+        }
+
+        /* Touch feedback */
+        button:active,
+        .option-card:active {
+            transform: scale(0.98);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-blue);
+            border-radius: 5px;
+        }
+
+        /* Safe area for notched phones */
+        @supports (padding: max(0px)) {
+            .screen {
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+                padding-top: max(20px, env(safe-area-inset-top));
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Screen 1: Home Screen -->
+    <div class="screen active" id="homeScreen">
+        <div class="container">
+            <!-- Header -->
+            <header class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Silent SOS</h1>
+                        <p>Emergency Help Request System</p>
+                    </div>
+                </div>
+                
+                <!-- Language Selector -->
+                <div class="language-selector">
+                    <button class="lang-btn active" data-lang="en" onclick="changeLanguage('en')">
+                        <span>🇺🇸</span> English
+                    </button>
+                    <button class="lang-btn" data-lang="hi" onclick="changeLanguage('hi')">
+                        <span>🇮🇳</span> हिंदी
+                    </button>
+                    <button class="lang-btn" data-lang="mr" onclick="changeLanguage('mr')">
+                        <span>🇮🇳</span> मराठी
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content Grid -->
+            <div class="main-content">
+                <!-- Left Column -->
+                <div class="left-column">
+                    <!-- Hero Section -->
+                    <div class="hero-section">
+                        <h1 class="title" id="mainTitle">Help in <span>Silence</span>,<br>Response in Action</h1>
+                        <p class="subtitle" id="mainSubtitle">
+                            A dignity-first emergency system designed for those who cannot speak or type. 
+                            Immediate help with just one touch. No talking needed, no forms to fill.
+                        </p>
+                        
+                        <!-- Features Grid -->
+                        <div class="features-grid">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>False Trigger Protection</h3>
+                                    <p>3-second confirmation prevents accidental activation</p>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-language"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Multi-Language Support</h3>
+                                    <p>English, Hindi, Marathi fully supported</p>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-bell-slash"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Completely Silent</h3>
+                                    <p>No sound alerts on your device</p>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Auto Location Sharing</h3>
+                                    <p>GPS coordinates sent automatically</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instructions Panel -->
+                    <div class="instructions-panel">
+                        <h3>How to Get Help:</h3>
+                        <div class="instructions-grid">
+                            <div class="instruction-step">
+                                <div class="step-number">1</div>
+                                <h4>Press SOS Button</h4>
+                                <p>For immediate general emergency response</p>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">2</div>
+                                <h4>Select Emergency Type</h4>
+                                <p>For specific emergency situations</p>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">3</div>
+                                <h4>3-Second Countdown</h4>
+                                <p>Prevents accidental activation</p>
+                            </div>
+                            <div class="instruction-step">
+                                <div class="step-number">4</div>
+                                <h4>Help Dispatched</h4>
+                                <p>Nearest services alerted immediately</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-column">
+                    <!-- SOS Button Section -->
+                    <div class="sos-container">
+                        <div class="sos-button-wrapper">
+                            <button class="sos-button" id="sosButton">
+                                SOS
+                            </button>
+                        </div>
+                        <div class="sos-instruction" id="sosLabel">
+                            Press and hold for 3 seconds
+                        </div>
+                        
+                        <div style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, rgba(26, 35, 126, 0.05), rgba(40, 53, 147, 0.05)); border-radius: var(--radius-lg); width: 100%;">
+                            <h3 style="font-family: 'Poppins', sans-serif; font-size: 18px; color: var(--primary-blue); margin-bottom: 10px;">Immediate Emergency Response</h3>
+                            <p style="font-size: 15px; color: var(--text-medium); line-height: 1.6;">Press the SOS button above for immediate assistance. Our system will automatically detect your location and alert the nearest emergency services.</p>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Options -->
+                    <div class="emergency-options">
+                        <h2 class="section-title" id="optionsTitle">Select Emergency Type</h2>
+                        <div class="options-grid">
+                            <!-- Medical -->
+                            <div class="option-card" onclick="startEmergency('medical')">
+                                <div class="option-icon" style="color: #d32f2f;">
+                                    <i class="fas fa-ambulance"></i>
+                                </div>
+                                <div class="option-name" id="optionMedical">Medical</div>
+                            </div>
+                            
+                            <!-- Police -->
+                            <div class="option-card" onclick="startEmergency('police')">
+                                <div class="option-icon" style="color: #1976d2;">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="option-name" id="optionPolice">Police</div>
+                            </div>
+                            
+                            <!-- Women Safety -->
+                            <div class="option-card" onclick="startEmergency('women')">
+                                <div class="option-icon" style="color: #7b1fa2;">
+                                    <i class="fas fa-female"></i>
+                                </div>
+                                <div class="option-name" id="optionWomen">Women Safety</div>
+                            </div>
+                            
+                            <!-- Mental Health -->
+                            <div class="option-card" onclick="startEmergency('mental')">
+                                <div class="option-icon" style="color: #388e3c;">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="option-name" id="optionMental">Mental Health</div>
+                            </div>
+                            
+                            <!-- Disaster -->
+                            <div class="option-card" onclick="startEmergency('disaster')">
+                                <div class="option-icon" style="color: #f57c00;">
+                                    <i class="fas fa-house-flood-water"></i>
+                                </div>
+                                <div class="option-name" id="optionDisaster">Disaster</div>
+                            </div>
+                            
+                            <!-- More Help -->
+                            <div class="option-card" onclick="startEmergency('general')">
+                                <div class="option-icon" style="color: #0097a7;">
+                                    <i class="fas fa-hands-helping"></i>
+                                </div>
+                                <div class="option-name" id="optionGeneral">More Help</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GOOGLE MAPS SIMULATION (Full Width) -->
+                <div class="map-section">
+                    <div class="map-header">
+                        <h2 id="mapTitle">Nearby Emergency Services</h2>
+                        <div class="google-badge">
+                            <i class="fab fa-google"></i>
+                            <span>Google Maps Technology</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Interactive Map Simulation -->
+                    <div class="map-simulation" id="mapSimulation">
+                        <div class="map-grid"></div>
+                        <!-- Markers will be added by JavaScript -->
+                    </div>
+                    
+                    <div class="map-footer">
+                        <div>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="locationStatus">Your location detected ✓</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-info-circle"></i>
+                            <span>Showing nearby emergency services</span>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-note">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Note: This is a simulation. In production, this would integrate with Google Maps API to show real emergency services.</span>
+                    </div>
+                </div>
+
+                <!-- Statistics Panel -->
+                <div class="stats-panel">
+                    <div class="stat-card">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Emergency Support</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">&lt;3s</div>
+                        <div class="stat-label">Response Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">No Talking Needed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Languages Supported</div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="footer-content">
+                        <h3>Emergency Response System</h3>
+                        <p id="footerText">Silent SOS provides immediate help without requiring speech or typing. Designed with dignity and privacy in mind.</p>
+                        
+                        <div class="tech-stack">
+                            <div class="tech-item">
+                                <i class="fab fa-google" style="color: #4285F4;"></i>
+                                <span>Google Fonts & Maps</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-map-marked-alt" style="color: #34A853;"></i>
+                                <span>Location Services</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-shield-alt" style="color: #FBBC05;"></i>
+                                <span>Secure & Private</span>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-top: 20px; font-size: 12px; color: #9e9e9e;">
+                            In real emergency, also contact local authorities: Police - 100, Ambulance - 102, Women Helpline - 1091
+                        </p>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 2: Countdown Screen -->
+    <div class="screen" id="countdownScreen">
+        <div class="container">
+            <div class="countdown-container">
+                <!-- AI Processing -->
+                <div class="ai-processing">
+                    <h2 class="ai-text" id="aiText">AI is analyzing your situation...</h2>
+                    <p class="ai-subtext" id="aiSubtext">
+                        Our system is identifying the emergency type and locating nearby help services using Google Maps technology.
+                    </p>
+                </div>
+                
+                <!-- Loading Animation -->
+                <div class="loading-animation">
+                    <div class="loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                
+                <!-- Countdown -->
+                <div class="countdown-display">
+                    <div class="countdown-circle"></div>
+                    <span id="countdownNumber">3</span>
+                </div>
+                
+                <!-- Cancel Button -->
+                <button class="cancel-btn" id="cancelBtn">
+                    <i class="fas fa-times"></i>
+                    <span id="cancelText">Cancel Emergency Request</span>
+                </button>
+                
+                <p style="color: var(--text-light); margin-top: 40px; max-width: 400px;" id="safetyNote">
+                    This 3-second delay prevents accidental activation. You can cancel anytime.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 3: Success Screen -->
+    <div class="screen" id="successScreen">
+        <div class="container">
+            <div class="success-container">
+                <!-- Success Icon -->
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                
+                <!-- Success Title -->
+                <h2 class="success-title" id="successTitle">Help is On The Way!</h2>
+                
+                <!-- Success Message -->
+                <p class="success-message" id="successMessage">
+                    Emergency services have been alerted and are responding to your location.
+                    Your situation has been analyzed and appropriate help is being dispatched.
+                </p>
+                
+                <!-- Organization Info -->
+                <div class="org-info">
+                    <p style="font-weight: 600; color: var(--text-dark); margin-bottom: 8px;" id="orgTitle">
+                        Alert sent to:
+                    </p>
+                    <p style="font-size: 24px; font-weight: 700; color: var(--primary-blue); margin-bottom: 12px;" id="orgName">
+                        City Emergency Response Team
+                    </p>
+                    <p style="color: var(--text-light); margin-bottom: 8px;">
+                        <i class="fas fa-clock"></i>
+                        <span id="orgEta">Estimated arrival: 8-12 minutes</span>
+                    </p>
+                    <p style="color: var(--text-light);">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Your location shared via GPS using Google Maps</span>
+                    </p>
+                </div>
+                
+                <!-- Back Button -->
+                <button class="back-btn" onclick="goBackHome()">
+                    <i class="fas fa-home"></i>
+                    <span id="backText">Return to Home Screen</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Language Management
+        const translations = {
+            en: {
+                mainTitle: "Help in <span>Silence</span>,<br>Response in Action",
+                mainSubtitle: "A dignity-first emergency system designed for those who cannot speak or type. Immediate help with just one touch. No talking needed, no forms to fill.",
+                sosLabel: "Press and hold for 3 seconds",
+                optionsTitle: "Select Emergency Type",
+                optionMedical: "Medical",
+                optionPolice: "Police",
+                optionWomen: "Women Safety",
+                optionMental: "Mental Health",
+                optionDisaster: "Disaster",
+                optionGeneral: "More Help",
+                mapTitle: "Nearby Emergency Services",
+                locationStatus: "Your location detected ✓",
+                footerText: "Silent SOS provides immediate help without requiring speech or typing. Designed with dignity and privacy in mind.",
+                aiText: "AI is analyzing your situation...",
+                aiSubtext: "Our system is identifying the emergency type and locating nearby help services using Google Maps technology.",
+                cancelText: "Cancel Emergency Request",
+                safetyNote: "This 3-second delay prevents accidental activation. You can cancel anytime.",
+                successTitle: "Help is On The Way!",
+                successMessage: "Emergency services have been alerted and are responding to your location. Your situation has been analyzed and appropriate help is being dispatched.",
+                orgTitle: "Alert sent to:",
+                orgEta: "Estimated arrival: 8-12 minutes",
+                backText: "Return to Home Screen",
+                organizations: {
+                    medical: ["City Hospital Emergency", "Medical Response Team", "Ambulance Services", "Trauma Center"],
+                    police: ["Police Control Room", "Emergency Police Unit", "Rapid Response Team", "Patrol Unit"],
+                    women: ["Women's Safety Helpline", "Protection Services", "Safety Response Team", "Crisis Center"],
+                    mental: ["Mental Health Crisis Line", "Counseling Services", "Emotional Support", "Therapy Network"],
+                    disaster: ["Disaster Management", "Emergency Rescue", "Relief Services", "Response Team"],
+                    general: ["Emergency Response", "Help Coordination", "Support Services", "Crisis Management"],
+                    sos: ["Emergency Dispatch Center", "Multi-Agency Response", "Crisis Management Team", "911 Dispatch"]
+                }
+            },
+            hi: {
+                mainTitle: "शांति में <span>मदद</span>,<br>कार्रवाई में प्रतिक्रिया",
+                mainSubtitle: "एक गरिमा-प्रथम आपातकालीन प्रणाली जो उन लोगों के लिए डिज़ाइन की गई है जो बोल या टाइप नहीं कर सकते। सिर्फ एक स्पर्श से तत्काल मदद। बोलने की जरूरत नहीं, कोई फॉर्म भरने की जरूरत नहीं।",
+                sosLabel: "3 सेकंड के लिए दबाएं और होल्ड करें",
+                optionsTitle: "आपातकालीन प्रकार चुनें",
+                optionMedical: "चिकित्सा",
+                optionPolice: "पुलिस",
+                optionWomen: "महिला सुरक्षा",
+                optionMental: "मानसिक स्वास्थ्य",
+                optionDisaster: "आपदा",
+                optionGeneral: "अधिक मदद",
+                mapTitle: "निकटवर्ती आपातकालीन सेवाएं",
+                locationStatus: "आपका स्थान पता चला ✓",
+                footerText: "साइलेंट एसओएस बोलने या टाइप करने की आवश्यकता के बिना तत्काल मदद प्रदान करता है। गरिमा और गोपनीयता को ध्यान में रखकर डिज़ाइन किया गया।",
+                aiText: "एआई आपकी स्थिति का विश्लेषण कर रहा है...",
+                aiSubtext: "हमारी प्रणाली गूगल मैप्स तकनीक का उपयोग करके आपातकालीन प्रकार की पहचान कर रही है और निकटवर्ती मदद सेवाओं का पता लगा रही है।",
+                cancelText: "आपातकालीन अनुरोध रद्द करें",
+                safetyNote: "यह 3-सेकंड की देरी आकस्मिक सक्रियण को रोकती है। आप कभी भी रद्द कर सकते हैं।",
+                successTitle: "मदद रास्ते में है!",
+                successMessage: "आपातकालीन सेवाओं को सतर्क किया गया है और वे आपके स्थान पर प्रतिक्रिया दे रही हैं। आपकी स्थिति का विश्लेषण किया गया है और उचित मदद भेजी जा रही है।",
+                orgTitle: "अलर्ट भेजा गया:",
+                orgEta: "अनुमानित आगमन: 8-12 मिनट",
+                backText: "होम स्क्रीन पर वापस जाएं",
+                organizations: {
+                    medical: ["शहर अस्पताल आपातकाल", "चिकित्सा प्रतिक्रिया दल", "एम्बुलेंस सेवाएं", "आघात केंद्र"],
+                    police: ["पुलिस नियंत्रण कक्ष", "आपातकालीन पुलिस इकाई", "त्वरित प्रतिक्रिया दल", "गश्ती इकाई"],
+                    women: ["महिला सुरक्षा हेल्पलाइन", "संरक्षण सेवाएं", "सुरक्षा प्रतिक्रिया दल", "संकट केंद्र"],
+                    mental: ["मानसिक स्वास्थ्य संकट रेखा", "परामर्श सेवाएं", "भावनात्मक समर्थन", "चिकित्सा नेटवर्क"],
+                    disaster: ["आपदा प्रबंधन", "आपातकालीन बचाव", "राहत सेवाएं", "प्रतिक्रिया दल"],
+                    general: ["आपातकालीन प्रतिक्रिया", "मदद समन्वय", "समर्थन सेवाएं", "संकट प्रबंधन"],
+                    sos: ["आपातकालीन प्रेषण केंद्र", "बहु-एजेंसी प्रतिक्रिया", "संकट प्रबंधन दल", "911 प्रेषण"]
+                }
+            },
+            mr: {
+                mainTitle: "शांततेत <span>मदत</span>,<br>कृतीत प्रतिसाद",
+                mainSubtitle: "एक प्रतिष्ठा-प्रथम आणीबाणी प्रणाली जी त्या लोकांसाठी डिझाइन केली आहे जे बोलू किंवा टाइप करू शकत नाहीत. फक्त एक स्पर्शाने तात्काळ मदत. बोलण्याची गरज नाही, फॉर्म भरण्याची गरज नाही.",
+                sosLabel: "3 सेकंद दाबा आणि होल्ड करा",
+                optionsTitle: "आणीबाणी प्रकार निवडा",
+                optionMedical: "वैद्यकीय",
+                optionPolice: "पोलीस",
+                optionWomen: "महिला सुरक्षा",
+                optionMental: "मानसिक आरोग्य",
+                optionDisaster: "आपत्ती",
+                optionGeneral: "अधिक मदत",
+                mapTitle: "जवळील आणीबाणी सेवा",
+                locationStatus: "तुमचे स्थान आढळले ✓",
+                footerText: "सायलंट एसओएस बोलणे किंवा टाइप करण्याची गरज न ठेवता तात्काळ मदत पुरवते. प्रतिष्ठा आणि गोपनीयता लक्षात घेऊन डिझाइन केलेले.",
+                aiText: "एआई तुमच्या परिस्थितीचे विश्लेषण करत आहे...",
+                aiSubtext: "आमची प्रणाली गूगल मॅप्स तंत्रज्ञान वापरून आणीबाणी प्रकार ओळखत आहे आणि जवळील मदत सेवा शोधत आहे.",
+                cancelText: "आणीबाणी विनंती रद्द करा",
+                safetyNote: "हा 3-सेकंद विलंब आकस्मिक सक्रियता रोखतो. तुम्ही कधीही रद्द करू शकता.",
+                successTitle: "मदत मार्गावर आहे!",
+                successMessage: "आणीबाणी सेवांना सतर्क केले गेले आहे आणि ते तुमच्या ठिकाणी प्रतिसाद देत आहेत. तुमच्या परिस्थितीचे विश्लेषण केले गेले आहे आणि योग्य मदत पाठविली जात आहे.",
+                orgTitle: "अलर्ट पाठविला:",
+                orgEta: "अंदाजे आगमन: 8-12 मिनिटे",
+                backText: "मुख्यपृष्ठावर परत जा",
+                organizations: {
+                    medical: ["शहर रुग्णालय आणीबाणी", "वैद्यकीय प्रतिसाद गट", "रुग्णवाहिका सेवा", "आघात केंद्र"],
+                    police: ["पोलीस नियंत्रण कक्ष", "आणीबाणी पोलीस युनिट", "त्वरित प्रतिसाद गट", "गस्ती युनिट"],
+                    women: ["महिला सुरक्षा हेल्पलाइन", "संरक्षण सेवा", "सुरक्षा प्रतिसाद गट", "संकट केंद्र"],
+                    mental: ["मानसिक आरोग्य संकट ओळ", "सल्लागार सेवा", "भावनिक समर्थन", "उपचार नेटवर्क"],
+                    disaster: ["आपत्ती व्यवस्थापन", "आणीबाणी बचाव", "मदत सेवा", "प्रतिसाद गट"],
+                    general: ["आणीबाणी प्रतिसाद", "मदत समन्वय", "समर्थन सेवा", "संकट व्यवस्थापन"],
+                    sos: ["आणीबाणी प्रेषण केंद्र", "बहु-एजन्सी प्रतिसाद", "संकट व्यवस्थापन गट", "911 प्रेषण"]
+                }
+            }
+        };
+
+        let currentLang = 'en';
+        let countdownInterval = null;
+        let countdownValue = 3;
+        let currentEmergencyType = 'sos';
+        let isCountingDown = false;
+
+        // Initialize the app
+        function initApp() {
+            // Set up SOS button
+            document.getElementById('sosButton').addEventListener('click', function() {
+                currentEmergencyType = 'sos';
+                startCountdown();
+            });
+            
+            // Set up cancel button
+            document.getElementById('cancelBtn').addEventListener('click', cancelEmergency);
+            
+            // Initialize with English
+            changeLanguage('en');
+            
+            // Initialize map simulation
+            initMapSimulation();
+            
+            // Add touch feedback for option cards
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.addEventListener('touchstart', function() {
+                    this.style.opacity = '0.9';
+                });
+                
+                card.addEventListener('touchend', function() {
+                    this.style.opacity = '1';
+                });
+            });
+        }
+
+        // Initialize interactive map simulation
+        function initMapSimulation() {
+            const mapContainer = document.getElementById('mapSimulation');
+            
+            // Emergency service locations (simulated)
+            const markers = [
+                {type: 'user', left: '50%', top: '50%', title: 'Your Location'},
+                {type: 'hospital', left: '60%', top: '40%', title: 'City Hospital'},
+                {type: 'police', left: '40%', top: '60%', title: 'Police Station'},
+                {type: 'women', left: '65%', top: '65%', title: "Women's Safety Center"},
+                {type: 'mental', left: '35%', top: '35%', title: 'Mental Health Clinic'},
+                {type: 'disaster', left: '55%', top: '70%', title: 'Disaster Response'},
+                {type: 'general', left: '30%', top: '50%', title: 'Emergency Services'}
+            ];
+            
+            // Clear existing markers
+            const existingMarkers = mapContainer.querySelectorAll('.map-marker');
+            existingMarkers.forEach(marker => marker.remove());
+            
+            // Add markers to map
+            markers.forEach(marker => {
+                const markerElement = document.createElement('div');
+                markerElement.className = `map-marker ${marker.type}-marker`;
+                markerElement.style.left = marker.left;
+                markerElement.style.top = marker.top;
+                markerElement.title = marker.title;
+                
+                // Add pulsing animation for user marker
+                if (marker.type === 'user') {
+                    markerElement.classList.add('user-marker');
+                }
+                
+                mapContainer.appendChild(markerElement);
+            });
+        }
+
+        // Change language
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const texts = translations[lang];
+            
+            // Update all UI texts
+            document.getElementById('mainTitle').innerHTML = texts.mainTitle;
+            document.getElementById('mainSubtitle').textContent = texts.mainSubtitle;
+            document.getElementById('sosLabel').textContent = texts.sosLabel;
+            document.getElementById('optionsTitle').textContent = texts.optionsTitle;
+            document.getElementById('optionMedical').textContent = texts.optionMedical;
+            document.getElementById('optionPolice').textContent = texts.optionPolice;
+            document.getElementById('optionWomen').textContent = texts.optionWomen;
+            document.getElementById('optionMental').textContent = texts.optionMental;
+            document.getElementById('optionDisaster').textContent = texts.optionDisaster;
+            document.getElementById('optionGeneral').textContent = texts.optionGeneral;
+            document.getElementById('mapTitle').textContent = texts.mapTitle;
+            document.getElementById('locationStatus').textContent = texts.locationStatus;
+            document.getElementById('footerText').textContent = texts.footerText;
+            document.getElementById('aiText').textContent = texts.aiText;
+            document.getElementById('aiSubtext').textContent = texts.aiSubtext;
+            document.getElementById('cancelText').textContent = texts.cancelText;
+            document.getElementById('safetyNote').textContent = texts.safetyNote;
+            document.getElementById('successTitle').textContent = texts.successTitle;
+            document.getElementById('successMessage').textContent = texts.successMessage;
+            document.getElementById('orgTitle').textContent = texts.orgTitle;
+            document.getElementById('backText').textContent = texts.backText;
+            
+            // Update language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Start emergency (from option cards)
+        function startEmergency(type) {
+            currentEmergencyType = type;
+            startCountdown();
+        }
+
+        // Start countdown sequence
+        function startCountdown() {
+            if (isCountingDown) return;
+            
+            isCountingDown = true;
+            
+            // Switch to countdown screen
+            document.getElementById('homeScreen').classList.remove('active');
+            document.getElementById('countdownScreen').classList.add('active');
+            document.getElementById('successScreen').classList.remove('active');
+            
+            // Reset countdown
+            countdownValue = 3;
+            document.getElementById('countdownNumber').textContent = countdownValue;
+            document.getElementById('countdownNumber').style.color = '#d32f2f';
+            
+            // Start countdown
+            countdownInterval = setInterval(() => {
+                countdownValue--;
+                document.getElementById('countdownNumber').textContent = countdownValue;
+                
+                // Color change for urgency
+                if (countdownValue === 2) {
+                    document.getElementById('countdownNumber').style.color = '#f57c00';
+                } else if (countdownValue === 1) {
+                    document.getElementById('countdownNumber').style.color = '#388e3c';
+                }
+                
+                // When countdown finishes
+                if (countdownValue <= 0) {
+                    clearInterval(countdownInterval);
+                    showSuccess();
+                }
+            }, 1000);
+        }
+
+        // Cancel emergency
+        function cancelEmergency() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            isCountingDown = false;
+            
+            // Add cancel animation
+            document.getElementById('countdownNumber').textContent = '✗';
+            document.getElementById('countdownNumber').style.color = '#757575';
+            
+            // Wait a moment then go back
+            setTimeout(() => {
+                goBackHome();
+            }, 800);
+        }
+
+        // Show success screen
+        function showSuccess() {
+            isCountingDown = false;
+            
+            // Get random organization for this emergency type
+            const orgs = translations[currentLang].organizations[currentEmergencyType];
+            const randomOrg = orgs[Math.floor(Math.random() * orgs.length)];
+            
+            // Update organization name
+            document.getElementById('orgName').textContent = randomOrg;
+            
+            // Update ETA based on emergency type
+            let eta = translations[currentLang].orgEta;
+            if (currentEmergencyType === 'medical') eta = eta.replace('8-12', '6-10');
+            if (currentEmergencyType === 'police') eta = eta.replace('8-12', '4-8');
+            if (currentEmergencyType === 'women') eta = eta.replace('8-12', '5-9');
+            document.getElementById('orgEta').textContent = eta;
+            
+            // Switch to success screen
+            document.getElementById('homeScreen').classList.remove('active');
+            document.getElementById('countdownScreen').classList.remove('active');
+            document.getElementById('successScreen').classList.add('active');
+        }
+
+        // Go back to home screen
+        function goBackHome() {
+            document.getElementById('homeScreen').classList.add('active');
+            document.getElementById('countdownScreen').classList.remove('active');
+            document.getElementById('successScreen').classList.remove('active');
+            
+            // Reset any state
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            isCountingDown = false;
+        }
+
+        // Add vibration feedback for mobile (if supported)
+        function vibrate() {
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+        }
+
+        // Add vibration to buttons
+        document.querySelectorAll('button, .option-card').forEach(element => {
+            element.addEventListener('touchstart', vibrate);
+            element.addEventListener('mousedown', vibrate);
+        });
+
+        // Initialize the app when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+
+        // Add animation to map markers periodically
+        setInterval(() => {
+            const markers = document.querySelectorAll('.map-marker:not(.user-marker)');
+            markers.forEach(marker => {
+                marker.style.transform = `translate(-50%, -50%) scale(${Math.random() * 0.2 + 0.9})`;
+            });
+        }, 2000);
+    </script>
+</body>
+</html>
