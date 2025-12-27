@@ -1,4 +1,4 @@
-# Silent SOS – Dignity-First Emergency Help System
+[# Silent SOS – Dignity-First Emergency Help System
 
 ## 🔹 Project Description
 Silent SOS is a web-based emergency help system designed for users who may not be able to speak, type, or explain their situation during an emergency. It provides a **silent, fast, and dignity-preserving way** to request help using an **icon-based interface**, **multi-language support (English, Hindi, Marathi)**, and a **3-second false-trigger countdown**.
@@ -24,3 +24,4 @@ Silent SOS is a web-based emergency help system designed for users who may not b
 1. Clone the repository:  
 ```bash
 
+](https://github.com/kamraanmulla/Silent-SOS/blob/main/README.md)
